@@ -28,5 +28,14 @@ class SignedDocument(Model):
 
     SignedDate = DateTimeField(default=datetime.datetime.now())
 
+    def getdict(self):
+        return {'DeviceId': self.DeviceId,
+                'FirstName': self.FirstName,
+                'MiddleName': self.MiddleName,
+                'LastName': self.LastName,
+                'Signature': self.Signature,
+                'SignedDate': self.SignedDate
+                }
+
     class Meta:
         database = db
