@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">passpoint</string>
+    <string name="next_button">подписать</string>
 </resources>
