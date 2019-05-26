@@ -48,7 +48,7 @@ def add_note():
 def return_render():
     logging.info("Got a /api/get_render GET request")
     try:
-        document = SignedDocument.select().where(DeviceId=request.json["Id"]).get()
+        document = SignedDocument.select().where(DeviceId=int(request.json["Id"])).get()
         rendered_document = renderpdf(document)
         with open("rendered_docs/{}.pdf".format(request.json["Id"]), 'wb') as file:
             file.write(rendered_document)
