@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sign(View view) {
+        Log.w(TAG, "next_button has been pressed");
+
         Intent intent = new Intent(this, SignActivity.class);
         startActivity(intent);
     }
