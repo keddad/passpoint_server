@@ -54,7 +54,7 @@ def return_render():
             file.write(rendered_document)
             logging.info("New document in rendered_docs/{}.pdf".format(request.json["Id"]))
         logging.info("Looks like /api/get_render processed normally")
-        return jsonify({"rendered_document": "rendered_docs/{}.pdf".format(request.json["Id"])}, 200)
+        return jsonify({"RenderedDocument": "rendered_docs/{}.pdf".format(request.json["Id"])}, 200)
     except:  # Need to find exceptions TODO
         logging.error("Something went wrong on /api/get_render when parsing {}".format(request.json))
         abort(400)
