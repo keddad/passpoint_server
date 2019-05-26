@@ -64,7 +64,7 @@ def return_render():
 def return_post():
     logging.info("Got a /api/get_post GET request")
     try:
-        document = SignedDocument.select().where(DeviceId=request.json["Id"]).get()
+        document = SignedDocument.select().where(DeviceId=int(request.json["Id"])).get()
         document_data = model_to_dict(document)
         logging.info("Looks like /api/get_post processed normally")
         return jsonify(document_data), 200
