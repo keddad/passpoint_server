@@ -3,6 +3,7 @@ from playhouse.shortcuts import model_to_dict
 from renderer import renderpdf
 import logging
 from models import SignedDocument, db
+from datetime import date
 
 logging.basicConfig(filename="log",
                     format='%(asctime)-6s: %(name)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)d - %(message)s',
@@ -87,6 +88,31 @@ def return_latest():
         if not offset:
             break
     return jsonify(to_return), 200
+
+
+@app.route("/api/return_query", methods=['GET'])
+def return_query():
+    try:
+        tmp = []
+        req = request.json
+        if "Older" in req:
+            req["Older"] = date.fromtimestamp(req["Older"])
+        if "Newer" in req:
+            req["Newer"] = date.fromtimestamp(req["Newer"])
+        for key, value in req['arguments'].items():
+            sunion = set()
+            for doc in SignedDocument.select().where(key == value).order_by(SignedDocument.SignedDate):
+                sunion += doc
+            tmp += sunion
+        out_set = set()
+        out_set = tmp[0].union(*tmp[1:])
+        return(jsonify(out_set), 200)
+    except:
+        abort(400)
+
+
+
+
 
 
 if __name__ == '__main__':

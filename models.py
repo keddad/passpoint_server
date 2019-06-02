@@ -2,7 +2,7 @@ from peewee import *
 import datetime
 
 db = PostgresqlDatabase(
-    'postgred_db',
+    'postgres_db',
     user='gaybar',
     password='IM A 1EE7 HAckER',
     host=' 5.8.180.39'
@@ -31,3 +31,4 @@ class SignedDocument(Model):
 
     class Meta:
         database = db
+
