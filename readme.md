@@ -30,7 +30,7 @@ Serverside for agreements collector, based on Flask
     "firstName" : "Имя",
     "middleName" : "Отчество",
     "lastName" : "Фамилия",
-    "signature" : "MD5 файла"
+    "signature" : "файл"
   }
 }
 ```
@@ -66,7 +66,7 @@ Serverside for agreements collector, based on Flask
   "FirstName" : "Имя",
   "MiddleName" : "Отчество",
   "LastName" : "Фамилия",
-  "Signature" : "b64 подписи",
+  "Signature" : "файл подписи",
   "SignedDate" : "2019-05-26 08:45:40.901427"
 }
 ```
@@ -89,7 +89,7 @@ Serverside for agreements collector, based on Flask
   "FirstName" : "Имя",
   "MiddleName" : "Отчество",
   "LastName" : "Фамилия",
-  "Signature" : "b64 подписи",
+  "Signature" : "файл подписи",
   "SignedDate" : "2019-05-26 08:45:40.901426"
  },
  {
@@ -98,7 +98,7 @@ Serverside for agreements collector, based on Flask
   "FirstName" : "Имя",
   "MiddleName" : "Отчество",
   "LastName" : "Фамилия",
-  "Signature" : "b64 подписи",
+  "Signature" : "файл подписи",
   "SignedDate" : "2019-05-26 08:45:40.901427"
  }
 ]
@@ -138,7 +138,7 @@ Serverside for agreements collector, based on Flask
   "FirstName" : "Имя",
   "MiddleName" : "Отчество",
   "LastName" : "Циндяйкин",
-  "Signature" : "b64 подписи",
+  "Signature" : "файл подписи",
   "SignedDate" : "2019-05-26 08:45:40.901426"
  },
  {
@@ -147,7 +147,7 @@ Serverside for agreements collector, based on Flask
   "FirstName" : "Имя",
   "MiddleName" : "Отчество",
   "LastName" : "Циндяйкин",
-  "Signature" : "b64 подписи",
+  "Signature" : "файл подписи",
   "SignedDate" : "2019-05-26 08:45:40.901427"
  }
 ]
