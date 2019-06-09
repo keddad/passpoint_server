@@ -6,13 +6,13 @@ public class Send {
         public String firstName;
         public String middleName;
         public String lastName;
-        public byte[] sign;
+        public byte[] signature;
 
-        public Person(String firstName, String middleName, String lastName, byte[] sign) {
+        public Person(String firstName, String middleName, String lastName, byte[] signature) {
             this.firstName = firstName;
             this.middleName = middleName;
             this.lastName = lastName;
-            this.sign = sign;
+            this.signature = signature;
         }
     }
 

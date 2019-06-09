@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
@@ -27,7 +29,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "MainLog";
-    private static String FileName = "6908186.pdf";
+    private static String FileName = "passpoint.pdf";
     private static PdfRenderer pdfRenderer;
     private static String url = "https://firebasestorage.googleapis.com/v0/b/passpointandroid.appspot.com/o/doc.pdf?alt=media&token=71fba9a9-0e4d-44f0-a28b-7120a9bbd1aa";
     private static String path;
@@ -57,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             Log.w(TAG, "File doesn't exists");
 
-            Toast.makeText(this, "Документ отсутствует.\nПожалуйста подождите", Toast.LENGTH_LONG).show();
+            if (isOnline()) Toast.makeText(this, "Документ отсутствует.\nПожалуйста подождите. Когда он будет скачен, перезапустите приложение", Toast.LENGTH_LONG).show();
+            else Toast.makeText(this, "Документ отсутствует.\nБез доступа к сети скачать документ невозможно", Toast.LENGTH_LONG).show();
 
             getDoc();
 
             try {
                 //new try to get document
                 File pdffile = new File(path);
-
                 pdfRenderer = new PdfRenderer(ParcelFileDescriptor.open(pdffile, ParcelFileDescriptor.MODE_READ_ONLY));
             } catch (FileNotFoundException error) {
                 Log.w(TAG, "File not found the second time");
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            Bitmap bitmap = Bitmap.createBitmap(this.getResources().getDisplayMetrics().widthPixels, this.getResources().getDisplayMetrics().heightPixels, Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap(this.getResources().getDisplayMetrics().widthPixels + 10, this.getResources().getDisplayMetrics().heightPixels + 10, Bitmap.Config.ARGB_8888);
 
             pdfRenderer.openPage(0).render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
 
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
         Log.w(TAG, "Starting request");
 
         dm.enqueue(request);
+
+        finish();
     }
 
     public void sign(View view) {
@@ -111,6 +115,16 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, SignActivity.class);
         startActivity(intent);
+    }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

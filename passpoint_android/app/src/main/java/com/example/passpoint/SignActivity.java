@@ -1,6 +1,10 @@
 package com.example.passpoint;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +31,7 @@ public class SignActivity extends AppCompatActivity {
     }
 
     public void sendSign(View view) {
+
         EditText editText = findViewById(R.id.name_edittext);
         String[] name = editText.getText().toString().split(" ");
 
@@ -42,6 +47,27 @@ public class SignActivity extends AppCompatActivity {
 
         new SendTask().doInBackground(send);
 
-        Toast.makeText(this, "Sign has been sent to server", Toast.LENGTH_LONG).show();
+        if (!isOnline()) Toast.makeText(this, "Нет интернет соединения.\nПодпись будет отправлена когда соединение появится", Toast.LENGTH_LONG).show();
+        else Toast.makeText(this, "Подпись была отправлена", Toast.LENGTH_LONG).show();
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 100);
+    }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
