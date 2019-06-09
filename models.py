@@ -2,7 +2,7 @@ from peewee import *
 import datetime
 
 db = PostgresqlDatabase(
-    'postgred_db',
+    'postgres_db',
     user='gaybar',
     password='IM A 1EE7 HAckER',
     host=' 5.8.180.39'
@@ -19,6 +19,7 @@ class SignedDocument(Model):
     """
 
     DeviceId = CharField()
+    Place = CharField()
 
     FirstName = CharField()
     MiddleName = CharField()
@@ -28,14 +29,6 @@ class SignedDocument(Model):
 
     SignedDate = DateTimeField(default=datetime.datetime.now())
 
-    def getdict(self):
-        return {'DeviceId': self.DeviceId,
-                'FirstName': self.FirstName,
-                'MiddleName': self.MiddleName,
-                'LastName': self.LastName,
-                'Signature': self.Signature,
-                'SignedDate': self.SignedDate
-                }
-
     class Meta:
         database = db
+
