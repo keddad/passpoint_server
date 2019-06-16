@@ -30,12 +30,12 @@ def add_note():
     logging.info("Got a /api/add_note POST request with json {}".format(request.json))
     try:
         document = SignedDocument(
-            Place=request.json["Place"],
-            DeviceId=request.json['IdDevice'],
-            FirstName=request.json['person']['firstName'],
-            MiddleName=request.json['person']['middleName'],
-            LastName=request.json['person']['lastName'],
-            Signature=request.json['person']['signature']
+            Place=request.form["Place"],
+            DeviceId=request.form['IdDevice'],
+            FirstName=request.form['firstName'],
+            MiddleName=request.form['middleName'],
+            LastName=request.form['lastName'],
+            Signature=request.form['signature']
         )
         document.save()
     except:  # Need to find exceptions TODO
