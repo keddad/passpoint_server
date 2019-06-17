@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, abort
+from flask import Flask, jsonify, request, make_response, abort, Response
 from playhouse.shortcuts import model_to_dict
 from renderer import renderpdf
 import logging
@@ -41,7 +41,7 @@ def add_note():d
         logging.error("Something went wrong on /api/add_note when parsing {}".format(request.json))
         abort(400)
     logging.info("Looks like /api/add_note processed normally")
-    return 201
+    return Response(status=201) 
 
 
 @app.route('/api/get_render', methods=['GET'])
