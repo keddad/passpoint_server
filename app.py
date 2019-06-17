@@ -26,8 +26,7 @@ def bad_request():
 
 
 @app.route('/api/add_note', methods=['POST'])
-def add_note():
-    logging.info("Got a /api/add_note POST request with json {}".format(request.json))
+def add_note():d
     try:
         document = SignedDocument(
             Place=request.form["Place"],
