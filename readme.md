@@ -21,17 +21,18 @@ Serverside for agreements collector, based on Flask
 Каждый метод режит в *ip:8080/api/имя*
 
 ### add_note
+
+#### На самом деле использует form, все сложно
+
 Метод для добавления новой записи в БД. Ожидаемый формат запроса:
 ```json
 {
  "Place" : "Название ЦОДа",
  "IdDevice" : "MD5 MAC модуля",
-  "person": {
-    "firstName" : "Имя",
-    "middleName" : "Отчество",
-    "lastName" : "Фамилия",
-    "signature" : "файл"
-  }
+ "firstName" : "Имя",
+ "middleName" : "Отчество",
+ "lastName" : "Фамилия",
+ "signature" : "файл"
 }
 ```
 В случае успешного добавления, ответ - HTTP 200

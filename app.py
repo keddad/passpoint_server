@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request, make_response, abort, Response
 from playhouse.shortcuts import model_to_dict
-from renderer import renderpdf
 import logging
 from models import SignedDocument, db
-from datetime import date
+from pathlib import Path
+import datetime
 
 logging.basicConfig(filename="log",
                     format='%(asctime)-6s: %(name)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)d - %(message)s',
@@ -26,38 +26,39 @@ def bad_request():
 
 
 @app.route('/api/add_note', methods=['POST'])
-def add_note():d
+def add_note():
+    date = datetime.datetime.now()
     try:
+        with open(f"signatures/"
+                  f"{request.form['firstName']}" 
+                  f"{request.form['middleName']}"
+                  f"{request.form['lastName']}"
+                  f"{date}.png",
+                  "wb") as file:
+            file.write(request.form["signature"].encode())
+
         document = SignedDocument(
             Place=request.form["Place"],
             DeviceId=request.form['IdDevice'],
             FirstName=request.form['firstName'],
             MiddleName=request.form['middleName'],
             LastName=request.form['lastName'],
-            Signature=request.form['signature']
+            Signature=f"signatures/{request.form['firstName']}"
+            f"{request.form['middleName']}"
+            f"{request.form['lastName']}"
+            f"{date}.png"
         )
         document.save()
     except:  # Need to find exceptions TODO
         logging.error("Something went wrong on /api/add_note when parsing {}".format(request.json))
         abort(400)
     logging.info("Looks like /api/add_note processed normally")
-    return Response(status=201) 
+    return Response(status=201)
 
 
 @app.route('/api/get_render', methods=['GET'])
 def return_render():
     logging.info("Got a /api/get_render GET request")
-    try:
-        document = SignedDocument.select().where(DeviceId=int(request.json["Id"])).get()
-        rendered_document = renderpdf(document)
-        with open("rendered_docs/{}.pdf".format(request.json["Id"]), 'wb') as file:
-            file.write(rendered_document)
-            logging.info("New document in rendered_docs/{}.pdf".format(request.json["Id"]))
-        logging.info("Looks like /api/get_render processed normally")
-        return jsonify({"RenderedDocument": "rendered_docs/{}.pdf".format(request.json["Id"])}, 200)
-    except:  # Need to find exceptions TODO
-        logging.error("Something went wrong on /api/get_render when parsing {}".format(request.json))
-        abort(400)
 
 
 @app.route('/api/get_post', methods=['GET'])
@@ -67,7 +68,7 @@ def return_post():
         document = SignedDocument.select().where(DeviceId=int(request.json["Id"])).get()
         document_data = model_to_dict(document)
         logging.info("Looks like /api/get_post processed normally")
-        return jsonify(document_data), 200
+        return jsonify(document_data)
     except:
         logging.error("Something went wrong on /api/get_post when parsing {}".format(request.json))
         abort(400)
@@ -86,7 +87,7 @@ def return_latest():
         offset -= 1
         if not offset:
             break
-    return jsonify(to_return), 200
+    return jsonify(to_return)
 
 
 @app.route("/api/return_query", methods=['GET'])
@@ -95,9 +96,9 @@ def return_query():
         tmp = []
         req = request.json
         if "Older" in req:
-            req["Older"] = date.fromtimestamp(req["Older"])
+            req["Older"] = datetime.date.fromtimestamp(req["Older"])
         if "Newer" in req:
-            req["Newer"] = date.fromtimestamp(req["Newer"])
+            req["Newer"] = datetime.date.fromtimestamp(req["Newer"])
         for key, value in req['arguments'].items():
             sunion = set()
             for doc in SignedDocument.select().where(key == value).order_by(SignedDocument.SignedDate):
@@ -105,13 +106,9 @@ def return_query():
             tmp += sunion
         out_set = set()
         out_set = tmp[0].union(*tmp[1:])
-        return(jsonify(out_set), 200)
+        return jsonify(out_set)
     except:
         abort(400)
-
-
-
-
 
 
 if __name__ == '__main__':
