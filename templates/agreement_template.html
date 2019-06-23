@@ -2,12 +2,12 @@
 <html>
 <head>
 	<title>{{document.LastName}}</title>
-	<link rel="stylesheet" href="agreement_template.css">
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename = 'agreement_template.css')}}">
 </head>
 <body>
 <p>
 <div class="container">
-<img src="https://www.croc.ru/local/templates/croc_main_312874/images/logo.svg" alt = "проблемы с соединением" width="150 align="center" hspace="20"vspace="0">
+<img src="https://www.croc.ru/local/templates/croc_main_312874/images/logo.svg" alt = "проблемы с соединением" width="150" align=center hspace="20" vspace="0">
 </div>
 </p>
 <p hspace="20"vspace="0">
@@ -122,7 +122,7 @@ If you have any questions or unusual situations, please contact the data center 
 </div>
 <div class="spec3">
 <form>
-<img src="{{document.Signature}}" alt="Подпись"> 
+<img src="{{url_for('signatures', filename = document.Signature) }}" alt="Подпись">
 </form>
 <div class="spec4">
 <p>

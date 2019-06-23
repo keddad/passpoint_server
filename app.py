@@ -30,7 +30,7 @@ def add_note():
     date = datetime.datetime.now()
     try:
         with open(f"signatures/"
-                  f"{request.form['firstName']}" 
+                  f"{request.form['firstName']}"
                   f"{request.form['middleName']}"
                   f"{request.form['lastName']}"
                   f"{date}.png",
@@ -43,7 +43,7 @@ def add_note():
             FirstName=request.form['firstName'],
             MiddleName=request.form['middleName'],
             LastName=request.form['lastName'],
-            Signature=f"signatures/{request.form['firstName']}"
+            Signature=f"{request.form['firstName']}"
             f"{request.form['middleName']}"
             f"{request.form['lastName']}"
             f"{date}.png"
@@ -62,7 +62,7 @@ def return_render(document_id):
     document_id = int(document_id)
     if SignedDocument.select().where(SignedDocument.id == document_id).exists():
         document = SignedDocument.select().where(SignedDocument.id == document_id).get()
-        return render_template("agreement_template.html", document = document)
+        return render_template("agreement_template.html", document=document)
     else:
         abort(404)
 

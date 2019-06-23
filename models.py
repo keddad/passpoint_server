@@ -14,15 +14,15 @@ db = SqliteDatabase('test.db')  # Model for local testing
 class SignedDocument(Model):
     """
     Model used to save signed notes
-    DeviceId - MD5 of Tablet's WiFi MAC
-    Signature = MD5 of original File. Definately not the best solution. TODO
+    DeviceId - MD5 of Tablet's WiFi MAC (Or Not, Complicated)
+    Signature = Path to original file in signatures/
     """
 
     DeviceId = CharField()
     Place = CharField()
 
     FirstName = CharField()
-    MiddleName = CharField()
+    MiddleName = CharField(default="-")
     LastName = CharField()
 
     Signature = CharField()
