@@ -4,5 +4,5 @@ __pycache__
 db.sqlite3
 venv
 test.db
-.idea
+.idea/*
 log
