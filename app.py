@@ -56,8 +56,9 @@ def add_note():
     return Response(status=201)
 
 
-@app.route('get_render/<document_id>/')
-def return_render(document_id):
+@app.route('/get_render/')
+def return_render():
+    document_id = request.args.get("document_id")
     logging.info(f"Got a /api/get_render/{document_id}/ request")
     document_id = int(document_id)
     if SignedDocument.select().where(SignedDocument.id == document_id).exists():

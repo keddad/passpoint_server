@@ -17,12 +17,13 @@ class SignedDocument(Model):
     DeviceId - MD5 of Tablet's WiFi MAC (Or Not, Complicated)
     Signature = Path to original file in signatures/
     """
+    id = IntegerField(primary_key=True)
 
     DeviceId = CharField()
     Place = CharField()
 
     FirstName = CharField()
-    MiddleName = CharField(default="-")
+    MiddleName = CharField(default="")
     LastName = CharField()
 
     Signature = CharField()
