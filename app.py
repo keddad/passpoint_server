@@ -28,10 +28,10 @@ def bad_request():
 @app.route('/api/add_note', methods=['POST'])
 def add_note():
     date = datetime.datetime.now()
-    if not os.path.exists("static/signatures"):
-        os.makedirs("static/signatures")
+    if not os.path.exists("static/"):
+        os.makedirs("static/")
     try:
-        with open(f"static/signatures/"
+        with open(f"static/"
                   f"{request.form['firstName']}"
                   f"{request.form['middleName']}"
                   f"{request.form['lastName']}"
