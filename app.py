@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, make_response, abort, Response, rende
 from playhouse.shortcuts import model_to_dict
 import logging
 from models import SignedDocument, db
-from pathlib import Path
+import os
 import datetime
 
 logging.basicConfig(filename="log",
@@ -28,8 +28,10 @@ def bad_request():
 @app.route('/api/add_note', methods=['POST'])
 def add_note():
     date = datetime.datetime.now()
+    if not os.path.exists("static/signatures"):
+        os.makedirs("static/signatures")
     try:
-        with open(f"signatures/"
+        with open(f"static/signatures/"
                   f"{request.form['firstName']}"
                   f"{request.form['middleName']}"
                   f"{request.form['lastName']}"
