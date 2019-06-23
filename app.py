@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, abort, Response
+from flask import Flask, jsonify, request, make_response, abort, Response, render_template
 from playhouse.shortcuts import model_to_dict
 import logging
 from models import SignedDocument, db
@@ -22,7 +22,7 @@ def bad_request():
 
 @app.errorhandler(404)
 def bad_request():
-    return make_response((jsonify({'error': 'Bad route'}), 404))
+    return make_response((jsonify({'error': 'Bad route or ID'}), 404))
 
 
 @app.route('/api/add_note', methods=['POST'])
@@ -56,9 +56,15 @@ def add_note():
     return Response(status=201)
 
 
-@app.route('/api/get_render', methods=['GET'])
-def return_render():
-    logging.info("Got a /api/get_render GET request")
+@app.route('get_render/<document_id>/')
+def return_render(document_id):
+    logging.info(f"Got a /api/get_render/{document_id}/ request")
+    document_id = int(document_id)
+    if SignedDocument.select().where(SignedDocument.id == document_id).exists():
+        document = SignedDocument.select().where(SignedDocument.id == document_id).get()
+        return render_template("agreement_template.html", document = document)
+    else:
+        abort(404)
 
 
 @app.route('/api/get_post', methods=['GET'])

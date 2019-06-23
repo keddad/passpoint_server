@@ -18,8 +18,6 @@ Serverside for agreements collector, based on Flask
 ## Работа с API
 Все методы API возвращают нормальный код HTTP.
 
-Каждый метод режит в *ip:8080/api/имя*
-
 ### add_note
 
 #### На самом деле использует form, все сложно
@@ -39,17 +37,13 @@ Serverside for agreements collector, based on Flask
 
 ### get_render
 Метод для получения подписанной PDF версии файла. Ожидаемый формат запроса:
-```json
+```url
 {
-"Id" : "42"
+server.com/get_render?document_id=42
 }
 ```
-Ожидаемый формат ответа - относительная ссылка на файл:
-```json
-{
-"RenderedDocument" : "rendered_docs/42.pdf"
-}
-```
+Ожидаемый формат ответа - отрендеренный HTML:
+
 
 
 ### return_post
@@ -74,7 +68,7 @@ Serverside for agreements collector, based on Flask
 
 
 ### return_latest
-Метод для получения множества последних записей по *offset*. Ожидаемый формат запроса:
+Метод для получения множества последних записей по *offset*. Ожидаемый формат запроса: 
 ```json
 {
   "offset" : "2"
