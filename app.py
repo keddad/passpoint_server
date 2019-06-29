@@ -29,7 +29,7 @@ def add_note():
                 "Filename": "Signature",
                 "Binary": Binary(request.form["signature"]),
                 "MIME-Type": "image/png"
-            }
+            },
             "AddTime": datetime.datetime.now()
         }
         signatures.insert_one(document)
