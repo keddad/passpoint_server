@@ -1,9 +1,14 @@
 from flask import Flask, jsonify, request, make_response, abort, Response, render_template
-from playhouse.shortcuts import model_to_dict
 import logging
-from models import SignedDocument, db
 import os
+import bson
+from bson.binary import Binary
+from bson.objectid import ObjectId
 import datetime
+from pymongo import MongoClient
+
+client = MongoClient("localhost", 27017)
+signatures = client.signatures
 
 logging.basicConfig(filename="log",
                     format='%(asctime)-6s: %(name)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)d - %(message)s',
@@ -11,113 +16,55 @@ logging.basicConfig(filename="log",
 
 app = Flask(__name__)
 
-db.connect()
-db.create_tables([SignedDocument])
-
-
-@app.errorhandler(400)
-def bad_request():
-    return make_response((jsonify({'error': 'Bad request'}), 400))
-
-
-@app.errorhandler(404)
-def bad_request():
-    return make_response((jsonify({'error': 'Bad route or ID'}), 404))
-
 
 @app.route('/api/add_note', methods=['POST'])
 def add_note():
-    date = datetime.datetime.now()
-    if not os.path.exists("static/"):
-        os.makedirs("static/")
     try:
-        with open(f"static/"
-                  f"{request.form['firstName']}"
-                  f"{request.form['middleName']}"
-                  f"{request.form['lastName']}"
-                  f"{date}.png",
-                  "wb") as file:
-            file.write(request.form["signature"].encode())
-
-        document = SignedDocument(
-            Place=request.form["Place"],
-            DeviceId=request.form['IdDevice'],
-            FirstName=request.form['firstName'],
-            MiddleName=request.form['middleName'],
-            LastName=request.form['lastName'],
-            Signature=f"{request.form['firstName']}"
-            f"{request.form['middleName']}"
-            f"{request.form['lastName']}"
-            f"{date}.png"
-        )
-        document.save()
+        document = {
+            "Place": request.form["Place"],
+            "FirstName": request.form['firstName'],
+            "MiddleName": request.form['middleName'],
+            "LastName": request.form['lastName'],
+            "Signature": {
+                "Filename": "Signature",
+                "Binary": Binary(request.form["signature"]),
+                "MIME-Type": "image/png"
+            }
+            "AddTime": datetime.datetime.now()
+        }
+        signatures.insert_one(document)
     except:  # Need to find exceptions TODO
-        logging.error("Something went wrong on /api/add_note when parsing {}".format(request.json))
+        logging.error(
+            "Something went wrong on /api/add_note when parsing {}".format(request.json))
         abort(400)
     logging.info("Looks like /api/add_note processed normally")
     return Response(status=201)
 
 
-@app.route('/get_render/')
-def return_render():
-    document_id = request.args.get("document_id")
-    logging.info(f"Got a /api/get_render/{document_id}/ request")
-    document_id = int(document_id)
-    if SignedDocument.select().where(SignedDocument.id == document_id).exists():
-        document = SignedDocument.select().where(SignedDocument.id == document_id).get()
-        return render_template("agreement_template.html", document=document)
-    else:
-        abort(404)
-
-
-@app.route('/api/get_post', methods=['GET'])
-def return_post():
-    logging.info("Got a /api/get_post GET request")
+@app.route('/get_render/<fileId>')
+def return_render(fileId):
+    logging.info(f"Got a /api/get_render/{fileId}/ request")
     try:
-        document = SignedDocument.select().where(DeviceId=int(request.json["Id"])).get()
-        document_data = model_to_dict(document)
-        logging.info("Looks like /api/get_post processed normally")
-        return jsonify(document_data)
-    except:
-        logging.error("Something went wrong on /api/get_post when parsing {}".format(request.json))
-        abort(400)
+        query = {"_id": ObjectId(fileId)}
+        post = signatures.find_one(query)
+        return render_template("agreement_template.html", document=post)
+    except Exception as e:
+        return jsonify({"error": e})
+        
 
 
-@app.route("/api/get_latest", methods=['GET'])
-def return_latest():
-    offset = 1
-    to_return = []
+@app.route('/download/<fileId>')
+def download(fileId):
     try:
-        offset = request.json['offset']
-    except:  # Need to find exceptions TODO
-        abort(400)
-    for doc in SignedDocument.select().order_by(SignedDocument.SignedDate):
-        to_return.append(model_to_dict(doc))
-        offset -= 1
-        if not offset:
-            break
-    return jsonify(to_return)
-
-
-@app.route("/api/return_query", methods=['GET'])
-def return_query():
-    try:
-        tmp = []
-        req = request.json
-        if "Older" in req:
-            req["Older"] = datetime.date.fromtimestamp(req["Older"])
-        if "Newer" in req:
-            req["Newer"] = datetime.date.fromtimestamp(req["Newer"])
-        for key, value in req['arguments'].items():
-            sunion = set()
-            for doc in SignedDocument.select().where(key == value).order_by(SignedDocument.SignedDate):
-                sunion += doc
-            tmp += sunion
-        out_set = set()
-        out_set = tmp[0].union(*tmp[1:])
-        return jsonify(out_set)
-    except:
-        abort(400)
+        query = {'_id': ObjectId(fileId)}
+        doc = signatures.find_one(query)
+        fileName = doc["Signature"]["Filename"]
+        response = make_response(doc["Signature"]['Binary'])
+        response.headers['Content-Type'] = doc["Signature"]["MIME-Type"]
+        response.headers["Content-Dispostion"] = "attachment; filename=\"%s\"" % fileName
+        return response
+    except Exception as e:
+        return jsonify({"error": e})
 
 
 if __name__ == '__main__':

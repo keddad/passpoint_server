@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ document.LastName }}</title>
+    <title>{{ document["LastName"] }}</title>
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename = 'agreement_template.css') }}">
 </head>
 <body>
 <p>
 <div class="container">
-    <img src="https://www.croc.ru/local/templates/croc_main_312874/images/logo.svg" alt="проблемы с соединением"
+    <img src="{{url_for('static', filename = logo_ru.png)}}}" alt="проблемы с соединением"
          width="150" align=center hspace="20" vspace="0">
 </div>
 </p>
@@ -124,7 +124,7 @@
 </div>
 <div class="spec1">
     <p>
-        {{ document.SignedDate }}
+        {{ document["AddTime"] }}
     </p>
 </div>
 <div class="spec2">
@@ -134,7 +134,7 @@
 </div>
 <div class="spec3">
     <form>
-        <img src="{{ url_for('static', filename = document.Signature) }}" alt="Подпись">
+        <img src="{{f"/download/{document['_id']}"}}" alt="Подпись">
     </form>
     <div class="spec4">
         <p>
@@ -144,7 +144,7 @@
     <p class="spec5">
     <p>
     <form>
-        {{ document.LastName }} {{ document.FirstName[0] }}. {{ document.LastName[0] }}.
+        {{ document["LastName"] }} {{ document["FirstName"] }} {{ document["LastName"] }}.
     </form>
     </p>
 </div>
