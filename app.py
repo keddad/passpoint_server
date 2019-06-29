@@ -8,7 +8,7 @@ import datetime
 from pymongo import MongoClient
 
 client = MongoClient("localhost", 27017)
-signatures = client.signatures
+signatures = client.db.signatures
 
 logging.basicConfig(filename="log",
                     format='%(asctime)-6s: %(name)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)d - %(message)s',
@@ -27,15 +27,15 @@ def add_note():
             "LastName": request.form['lastName'],
             "Signature": {
                 "Filename": "Signature",
-                "Binary": Binary(request.files["signature"]),
+                "Binary": Binary(request.files["signature"].read()),
                 "MIME-Type": "image/png"
             },
             "AddTime": datetime.datetime.now()
         }
         signatures.insert_one(document)
-    except:  # Need to find exceptions TODO
+    except Exception as e:  # Need to find exceptions TODO
         logging.error(
-            "Something went wrong on /api/add_note when parsing {}".format(request.json))
+            f"{e} went wrong on /api/add_note when parsing {request.form}")
         abort(400)
     logging.info("Looks like /api/add_note processed normally")
     return Response(status=201)
@@ -50,7 +50,6 @@ def return_render(fileId):
         return render_template("agreement_template.html", document=post)
     except Exception as e:
         return jsonify({"error": e})
-        
 
 
 @app.route('/download/<fileId>')
