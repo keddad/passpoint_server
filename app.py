@@ -19,18 +19,21 @@ app = Flask(__name__)
 
 @app.route('/api/add_note', methods=['POST'])
 def add_note():
+    now = datetime.datetime.now()
     try:
         document = {
-            "Place": request.form["Place"],
-            "FirstName": request.form['firstName'],
-            "MiddleName": request.form['middleName'],
-            "LastName": request.form['lastName'],
             "Signature": {
                 "Filename": "Signature",
+                # 256*256 PNG
                 "Binary": Binary(request.files["signature"].read()),
                 "MIME-Type": "image/png"
             },
-            "AddTime": datetime.datetime.now()
+            "Name": {
+                "Filename": "Name",
+                "Binary": Binary(request.files["name"].read()),  # ? * ? PNG
+                "MIME-Type": "image/png"
+            },
+            "AddTime": f"{now.year}{now.month}{now.day}"
         }
         signatures.insert_one(document)
     except Exception as e:  # Need to find exceptions TODO
@@ -40,6 +43,14 @@ def add_note():
     logging.info("Looks like /api/add_note processed normally")
     return Response(status=201)
 
+@app.route('/<date>')
+def main_page(date):
+    now = datetime.datetime.now()
+    date = date or f"{now.year}{now.month}{now.day}"
+    to_render = list()
+    for entity in signatures.find({"AddTime":date}):
+        to_render.append(entity)
+    return render_template("main_page_template.html", documents = to_render)
 
 @app.route('/get_render/<fileId>')
 def return_render(fileId):
@@ -52,14 +63,28 @@ def return_render(fileId):
         return jsonify({"error": e})
 
 
-@app.route('/download/<fileId>')
-def download(fileId):
+@app.route('/download/signature/<fileId>')
+def download_signature(fileId):
     try:
         query = {'_id': ObjectId(fileId)}
         doc = signatures.find_one(query)
         fileName = doc["Signature"]["Filename"]
         response = make_response(doc["Signature"]['Binary'])
         response.headers['Content-Type'] = doc["Signature"]["MIME-Type"]
+        response.headers["Content-Dispostion"] = "attachment; filename=\"%s\"" % fileName
+        return response
+    except Exception as e:
+        return jsonify({"error": e})
+
+
+@app.route('/download/name/<fileId>')
+def download_name(fileId):
+    try:
+        query = {'_id': ObjectId(fileId)}
+        doc = signatures.find_one(query)
+        fileName = doc["Name"]["Filename"]
+        response = make_response(doc["Name"]['Binary'])
+        response.headers['Content-Type'] = doc["Name"]["MIME-Type"]
         response.headers["Content-Dispostion"] = "attachment; filename=\"%s\"" % fileName
         return response
     except Exception as e:
