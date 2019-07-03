@@ -144,7 +144,7 @@
         </div>
         <div class="spec3">
             <form>
-                <img src="{{f"/download/signature/{document['_id']}"}}" alt="Подпись">
+                <img src="{{"/download/signature/{}.format(document['_id'])"}}" alt="Подпись">
             </form>
             <div class="spec4">
                 <p>
@@ -154,7 +154,7 @@
             <p class="spec5">
                 <p>
                     <form>
-                        <img src="{{f"/download/name/{document['_id']}"}}" alt="Расшифровка подписи">
+                        <img src="{{"/download/name/{}.format(document['_id'])"}}" alt="Расшифровка подписи">
                     </form>
                 </p>
         </div>
