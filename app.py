@@ -8,11 +8,11 @@ import datetime
 from pymongo import MongoClient
 
 client = MongoClient("localhost", 27017)
-signatures = client.db.signatures
+signatures = client.db.signatures  # collecrion used to store all the stuff
 
-logging.basicConfig(filename="log",
+logging.basicConfig(filename="passpoint_server.log",
                     format='%(asctime)-6s: %(name)s - %(levelname)s - %(module)s - %(funcName)s - %(lineno)d - %(message)s',
-                    level=logging.DEBUG)
+                    level=logging.DEBUG)  # come logging features
 
 app = Flask(__name__)
 
@@ -30,10 +30,14 @@ def add_note():
             },
             "Name": {
                 "Filename": "Name",
-                "Binary": Binary(request.files["name"].read()),  # ? * ? PNG
+                "Binary": Binary(request.files["name"].read()),  # 1054*110 PNG
+                # hardcoded data is AMAZING! I love it.
                 "MIME-Type": "image/png"
             },
-            "AddTime": f"{now.year}{now.month}{now.day}"
+            # date used to perform search queries
+            "LookupTime": f"{now.year}{now.month}{now.day}",
+            # actually a feature
+            "VisualTime": f"{now.year}.{now.month}.{now.day}"
         }
         signatures.insert_one(document)
     except Exception as e:  # Need to find exceptions TODO
@@ -43,16 +47,18 @@ def add_note():
     logging.info("Looks like /api/add_note processed normally")
     return Response(status=201)
 
+
 @app.route('/<date>')
 def main_page(date):
     now = datetime.datetime.now()
     date = date or f"{now.year}{now.month}{now.day}"
     to_render = list()
-    for entity in signatures.find({"AddTime":date}):
+    for entity in signatures.find({"LookupTime": date}): # Find all the signatures from requred date
         to_render.append(entity)
-    return render_template("main_page_template.html", documents = to_render)
+    return render_template("main_page_template.html", documents=to_render)
 
-@app.route('/get_render/<fileId>')
+
+@app.route('/get_render/<fileId>') # Request to get rendered page
 def return_render(fileId):
     logging.info(f"Got a /api/get_render/{fileId}/ request")
     try:
@@ -63,7 +69,7 @@ def return_render(fileId):
         return jsonify({"error": e})
 
 
-@app.route('/download/signature/<fileId>')
+@app.route('/download/signature/<fileId>') # Request to download a signature file
 def download_signature(fileId):
     try:
         query = {'_id': ObjectId(fileId)}
@@ -77,7 +83,7 @@ def download_signature(fileId):
         return jsonify({"error": e})
 
 
-@app.route('/download/name/<fileId>')
+@app.route('/download/name/<fileId>') # Request to download a "name" file, signature description
 def download_name(fileId):
     try:
         query = {'_id': ObjectId(fileId)}
