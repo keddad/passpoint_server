@@ -70,7 +70,7 @@ def return_render(fileId):
         post = signatures.find_one(query)
         return render_template("agreement_template.html", document=post)
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": e})
 
 
 @app.route('/download/signature/<fileId>') # Request to download a signature file
@@ -85,7 +85,7 @@ def download_signature(fileId):
         response.headers["Content-Dispostion"] = "attachment; filename=\"%s\"" % fileName
         return response
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": e})
 
 
 @app.route('/download/name/<fileId>') # Request to download a "name" file, signature description
@@ -100,7 +100,7 @@ def download_name(fileId):
         response.headers["Content-Dispostion"] = "attachment; filename=\"%s\"" % fileName
         return response
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": e})
 
 
 if __name__ == '__main__':

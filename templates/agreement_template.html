@@ -9,7 +9,7 @@
 <body>
     <p>
         <div class="container">
-            <img src="{{url_for('static', filename = "logo_ru.png")}}}" alt="проблемы с соединением" width="150"
+            <img src="http://5.8.180.39/static/logo_ru.png" alt="проблемы с соединением" width="150"
                 align=center hspace="20" vspace="0">
         </div>
     </p>
@@ -144,7 +144,7 @@
         </div>
         <div class="spec3">
             <form>
-                <img src="{{"/download/signature/{}.format(document['_id'])"}}" alt="Подпись">
+                <img src="{{"/download/signature/{}".format(document['_id'])}}" alt="Подпись">
             </form>
             <div class="spec4">
                 <p>
@@ -154,7 +154,7 @@
             <p class="spec5">
                 <p>
                     <form>
-                        <img src="{{"/download/name/{}.format(document['_id'])"}}" alt="Расшифровка подписи">
+                        <img src="{{"/download/name/{}".format(document['_id'])}}" alt="Расшифровка подписи">
                     </form>
                 </p>
         </div>
