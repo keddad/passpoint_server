@@ -55,7 +55,7 @@ def add_note():
 def main_page():
     logging.info(f"Got a / request")
     now = datetime.datetime.now()
-    date = request.args.get["date"] or f"{now.year}{now.month}{now.day}"
+    date = request.args.get("date") or f"{now.year}{now.month}{now.day}"
     to_render = list()
     for entity in signatures.find({"LookupTime": date}): # Find all the signatures from requred date
         to_render.append(entity)

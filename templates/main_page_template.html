@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Список записей</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'main_page.css') }}">
+    <style type="text/css">
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <p>
+        <div class="container">
+            <img src="{{url_for('static', filename = logo_ru.png)}}" alt="проблемы с соединением" width=150 align="
+                center" hspace="20" vspace="0">
+        </div>
+    </p>
+    <br>
+    <br>
+
+    <div class="obj">
+
+        <style>
+            form {
+                display: -webkit-flex;
+                display: -moz-flex;
+                display: -ms-flex;
+                display: -o-flex;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 50px;
+            }
+        </style>
+
+
+
+        <form action="http://5.8.180.39" method="GET">
+
+            <input type="date" name="date" class="input">
+
+            <input type="submit" value="Поиск" class="input__submit">
+        </form>
+
+        <body>
+            <div class="scrollingTable">
+
+                <table id="myTable" style="font: 17px CirceLight;">
+                    <tr>
+                        <td> ФИО </td>
+                        <td> ДАТА </td>
+                        <td> СОГЛАСИЕ </td>
+                    </tr>
+                    {% for document in documents %}
+                    <tr>
+                        <td><img src="{{f"/download/name/{document['_id']}"}}"></td>
+                        <td>{{document["VisualTime"]}}</td>
+                        <td><a href="{{f"/get_render/{document['_id']}"}}"> Согласие </a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        </body>
+
+</html>

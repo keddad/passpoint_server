@@ -1,0 +1,62 @@
+.container{
+	margin:left;
+}
+.obj{
+text-align:center;
+	
+}
+
+body{
+	margin:0;
+	padding:0;
+	font: 1em sans-serif;
+}
+.input__submit,
+a.blubtn {
+  width:90px;
+  text-align:center;
+  display:block;
+  font-family: arial;
+  text-decoration: none;
+  font-weight: 300;
+  font-size: 14px;
+  border: #1071FF 1px solid;
+  color: #1071FF;
+  padding: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  transition: .5s;
+  border-radius: 0px;
+}
+.input__submit:hover,
+a.blubtn:hover {
+  top: 5px;
+  transition: .5s;
+  color: #10FF58;
+  border: #10FF58 1px solid;
+  border-radius: 10px;
+}
+.input__submit:active,
+a.blubtn:active {
+  color: #000;
+  border: #1A1A1A 1px solid;
+  transition: .07s;
+  background-color: #FFF;
+}
+.sp{
+	text-align: center;
+}
+.
+
+
+
+
+
+
+
+
+
+
+ 
+
+
