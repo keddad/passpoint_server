@@ -38,3 +38,14 @@
 	.spec5{
 	     text-align:right;
 	}
+.par1{
+	margin-left: 100px;
+	margin-right:100px;
+}
+h1 {
+	font-family: CirceBold;
+}
+
+p {
+	font-family: CirceLight;
+}
