@@ -19,6 +19,7 @@ app = Flask(__name__)
 
 @app.route('/api/add_note', methods=['POST'])
 def add_note():
+    logging.info(f"Got a /add_note/ request")
     now = datetime.datetime.now()
     try:
         document = {
@@ -42,14 +43,15 @@ def add_note():
         signatures.insert_one(document)
     except Exception as e:  # Need to find exceptions TODO
         logging.error(
-            f"{e} went wrong on /api/add_note when parsing {request.form}")
+            f"{e} went wrong on /add_note when parsing {request.form}")
         abort(400)
-    logging.info("Looks like /api/add_note processed normally")
+    logging.info("Looks like /add_note processed normally")
     return Response(status=201)
 
 
 @app.route('/<date>')
 def main_page(date):
+    logging.info(f"Got a / request")
     now = datetime.datetime.now()
     date = date or f"{now.year}{now.month}{now.day}"
     to_render = list()
@@ -60,7 +62,7 @@ def main_page(date):
 
 @app.route('/get_render/<fileId>') # Request to get rendered page
 def return_render(fileId):
-    logging.info(f"Got a /api/get_render/{fileId}/ request")
+    logging.info(f"Got a /get_render/{fileId}/ request")
     try:
         query = {"_id": ObjectId(fileId)}
         post = signatures.find_one(query)
@@ -71,6 +73,7 @@ def return_render(fileId):
 
 @app.route('/download/signature/<fileId>') # Request to download a signature file
 def download_signature(fileId):
+    logging.info(f"Got a /download/signature/{fileId}/ request")
     try:
         query = {'_id': ObjectId(fileId)}
         doc = signatures.find_one(query)
@@ -86,6 +89,7 @@ def download_signature(fileId):
 @app.route('/download/name/<fileId>') # Request to download a "name" file, signature description
 def download_name(fileId):
     try:
+        logging.info(f"Got a /download/name/{fileId}/ request")
         query = {'_id': ObjectId(fileId)}
         doc = signatures.find_one(query)
         fileName = doc["Name"]["Filename"]
