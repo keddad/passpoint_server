@@ -7,6 +7,8 @@ from bson.objectid import ObjectId
 import datetime
 from pymongo import MongoClient
 
+
+
 client = MongoClient("localhost", 27017)
 signatures = client.db.signatures  # collecrion used to store all the stuff
 
@@ -17,7 +19,7 @@ logging.basicConfig(filename="passpoint_server.log",
 app = Flask(__name__)
 
 
-@app.route('/api/add_note', methods=['POST'])
+@app.route('/add_note', methods=['POST'])
 def add_note():
     logging.info(f"Got a /add_note/ request")
     now = datetime.datetime.now()
