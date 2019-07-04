@@ -59,7 +59,7 @@ def main_page():
     to_render = list()
     for entity in signatures.find({"LookupTime": date}): # Find all the signatures from requred date
         to_render.append(entity)
-    return render_template("main_page_template.html", documents=to_render)
+    return render_template("main_page_template.html", documents=to_render[::-1])
 
 
 @app.route('/get_render/<fileId>') # Request to get rendered page
